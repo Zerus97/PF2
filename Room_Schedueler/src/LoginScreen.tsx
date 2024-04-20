@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 
 function Login() {
   // Estados para armazenar os valores dos campos de entrada
