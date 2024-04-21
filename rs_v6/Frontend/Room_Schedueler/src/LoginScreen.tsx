@@ -23,6 +23,7 @@ function Login() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          //backgroundColor: "lightblue",
         }}
         noValidate
         autoComplete="off"
@@ -44,8 +45,35 @@ function Login() {
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
         />
-        <button type="button" className="btn btn-primary" onClick={handleLogin}>
-          Login
+      </Box>
+      <Box
+        component="form"
+        sx={{
+          "& .MuiTextField-root": { m: 1, width: "25ch" },
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          //backgroundColor: "lightgreen",
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleLogin}
+          style={{ alignSelf: "center", marginRight: "10px" }}
+        >
+          Entrar
+        </button>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleLogin}
+          style={{ alignSelf: "center" }}
+        >
+          Registrar
         </button>
       </Box>
     </>
