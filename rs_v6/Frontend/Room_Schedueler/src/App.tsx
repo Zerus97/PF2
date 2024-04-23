@@ -1,7 +1,12 @@
-import Login from "./LoginScreen"
+//import Login from "./screens/LoginScreen";
+import MainMenu from "./screens/MainMenu";
 
 function App() {
-    return <div><Login></Login></div>
+  return (
+    <div>
+      <MainMenu user={"Lucas"}></MainMenu>
+    </div>
+  );
 }
 
 export default App;
