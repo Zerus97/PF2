@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
 interface Props {
-  user: string;
+  user?: string;
 }
 
 function MainMenu({ user }: Props) {
