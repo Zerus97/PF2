@@ -1,7 +1,8 @@
-import Login from "./LoginScreen"
+import Login from "./screens/LoginScreen";
+import MainMenu from "./screens/MainMenu";
 
 function App() {
-    return <div><Login></Login></div>
+  return <Login></Login>;
 }
 
 export default App;

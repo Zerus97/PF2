@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Box, TextField } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 function Login() {
   // Estados para armazenar os valores dos campos de entrada
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
+  const navigate = useNavigate();
 
   // Função para lidar com o clique no botão de login
   const handleLogin = () => {
@@ -12,6 +13,7 @@ function Login() {
     console.log("Matrícula:", matricula);
     console.log("Senha:", senha);
     // Você pode prosseguir com outras operações, como enviar esses dados para o servidor
+    navigate("/main_menu");
   };
 
   return (
