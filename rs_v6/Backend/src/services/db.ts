@@ -1,11 +1,10 @@
 import sqlite3 from "sqlite3";
 
-//const DATABASE_FILE = process.env.DATABASE_FILE;
-const DATABASE_FILE = "//rs_v6//Backend//my_data.db";
+const DATABASE_FILE = process.env.DATABASE_FILE;
 if (!DATABASE_FILE) throw new Error("DATABASE_FILE não informado");
 
 export const openConnection = () => {
-  let db = new sqlite3.Database("rs_v6\\Backend\\my_data.db");
+  let db = new sqlite3.Database(DATABASE_FILE);
   return db;
 };
 

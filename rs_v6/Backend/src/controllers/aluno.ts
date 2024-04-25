@@ -7,7 +7,7 @@ const insertAluno = (req: Request, res: Response) => {
 
   if (!aluno.matricula) badRequest(res, "Matrícula Inválida");
 
-  if (!aluno.nome) badRequest(res, "Nome inválido");
+  if (!aluno.senha) badRequest(res, "Senha inválida");
 
   alunoModel
     .insertAluno(aluno)
@@ -17,6 +17,22 @@ const insertAluno = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const login = (req: Request, res: Response) => {
+  const aluno = req.body as Aluno;
+
+  if (!aluno.matricula) badRequest(res, "Matrícula Inválida");
+
+  if (!aluno.senha) badRequest(res, "Senha inválido");
+
+  alunoModel
+    .login(aluno)
+    .then((id) => {
+      res.json({ id });
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 export const alunoController = {
   insertAluno,
+  login
 };

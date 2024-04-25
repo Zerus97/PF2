@@ -3,7 +3,7 @@ dotenv.config();
 
 import express, { Request, Response } from "express";
 import { useRoutes } from "./routes";
-import bodyParser, { BodyParser } from "body-parser";
+import bodyParser from "body-parser";
 
 const PORT = 8091;
 

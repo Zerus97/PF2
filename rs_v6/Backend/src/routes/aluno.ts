@@ -3,5 +3,6 @@ import { alunoController } from "../controllers/aluno";
 
 const alunoRouter = Router();
 
-alunoRouter.post("/", alunoController.insertAluno);
+alunoRouter.post("/post", alunoController.insertAluno);
+alunoRouter.get("/login", alunoController.login);
 export { alunoRouter };
