@@ -27,7 +27,7 @@ const login = (req: Request, res: Response) => {
   alunoModel
     .login(aluno)
     .then((id) => {
-      res.json({ id });
+      return res.json({id});
     })
     .catch((err) => internalServerError(res, err));
 };
