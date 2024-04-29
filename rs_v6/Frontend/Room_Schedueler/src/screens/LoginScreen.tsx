@@ -14,8 +14,10 @@ function Login() {
     console.log("Matrícula:", matricula);
     console.log("Senha:", senha);
     // Você pode prosseguir com outras operações, como enviar esses dados para o servidor
-    await Http_api.login(Number(matricula), senha);
-    // navigate("/main_menu");
+    const response = await Http_api.login(Number(matricula), senha);
+    if (response.id) {
+      navigate("/main_menu");
+    }
   };
 
   return (
