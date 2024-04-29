@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Http_api from "../utils/Http_api";
 function Login() {
   // Estados para armazenar os valores dos campos de entrada
   const [matricula, setMatricula] = useState("");
@@ -8,12 +9,15 @@ function Login() {
   const navigate = useNavigate();
 
   // Função para lidar com o clique no botão de login
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Aqui você pode usar os valores armazenados nos estados matricula e senha
     console.log("Matrícula:", matricula);
     console.log("Senha:", senha);
     // Você pode prosseguir com outras operações, como enviar esses dados para o servidor
-    navigate("/main_menu");
+    const response = await Http_api.login(Number(matricula), senha);
+    if (response.id) {
+      navigate("/main_menu");
+    }
   };
 
   return (
