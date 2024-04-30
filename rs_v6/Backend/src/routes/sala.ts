@@ -3,5 +3,5 @@ import { salaController } from "../controllers/sala";
 
 const salaRouter = Router();
 
-salaRouter.post("/post_sala", salaController.insertsala);
+salaRouter.post("/post", salaController.insertsala);
 export { salaRouter };
