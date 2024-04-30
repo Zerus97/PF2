@@ -8,13 +8,13 @@ export type Sala = {
 }
 
 const insertSala = async (sala: Sala) => {
-  await dbQuery("INSERT INTO Salas VALUES (?, ?, ?, ?)", [
-  sala.sala_id,
+  const query = `INSERT INTO Salas VALUES (CONCAT('${sala.predio}', '${sala.andar}', '${sala.numero}'), ?, ?, ?);`
+  await dbQuery(query, [
   sala.predio,
   sala.andar,
   sala.numero
   ]);
-  let result = await dbQuery("SELECT sala_id FROM Salas WHERE sala_id = ?", [sala.sala_id]);
+  let result = await dbQuery("SELECT sala_id FROM Salas WHERE sala_id = ?", [sala.predio + sala.andar + sala.numero]);
   return result[0].sala_id as number || undefined;
 };
 

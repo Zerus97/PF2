@@ -4,8 +4,6 @@ import { Sala, salaModel } from "../models/sala";
 
 const insertsala = (req: Request, res: Response) => {
   const sala = req.body as Sala;
-
-  if (!sala.sala_id) badRequest(res, "sala_id vazio");
   if (!sala.predio) badRequest(res, "predio vazio");
   if (!sala.andar) badRequest(res, "andar vazio");
   if (!sala.numero) badRequest(res, "numero vazio");

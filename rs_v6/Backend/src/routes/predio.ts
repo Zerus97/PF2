@@ -3,5 +3,5 @@ import { predioController } from "../controllers/predio";
 
 const predioRouter = Router();
 
-predioRouter.post("/post_predio", predioController.insertPredio);
+predioRouter.post("/post", predioController.insertPredio);
 export { predioRouter };

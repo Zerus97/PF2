@@ -5,6 +5,7 @@ if (!DATABASE_FILE) throw new Error("DATABASE_FILE não informado");
 
 export const openConnection = () => {
   let db = new sqlite3.Database(DATABASE_FILE);
+  db.exec("PRAGMA foreign_keys = ON");
   return db;
 };
 
