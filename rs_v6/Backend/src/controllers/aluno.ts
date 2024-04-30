@@ -6,7 +6,6 @@ const insertAluno = (req: Request, res: Response) => {
   const aluno = req.body as Aluno;
 
   if (!aluno.matricula) badRequest(res, "Matrícula Inválida");
-
   if (!aluno.senha) badRequest(res, "Senha inválida");
 
   alunoModel
