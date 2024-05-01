@@ -30,7 +30,21 @@ const getSalaRecursos = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const getSalaByRecursos = (req: Request, res: Response) => {
+  const { recursos } = req.query;
+  if (!recursos) return badRequest(res, "Recursos vazios");
+
+  const recursosArray = Array.isArray(recursos) ? recursos.map(String) : [String(recursos)];
+  salaRecursoModel
+    .getSalaByRecursos(recursosArray)
+    .then((salas) => {
+      res.json({ salas });
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 export const salaRecursoController = {
   insertSalaRecurso,
-  getSalaRecursos
+  getSalaRecursos,
+  getSalaByRecursos
 };
