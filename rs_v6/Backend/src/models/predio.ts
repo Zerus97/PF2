@@ -14,7 +14,13 @@ const insertPredio = async (predio: Predio) => {
     return result[0].predio_id as number || undefined;
 };
 
+const getPredios = async () => {
+  const predios = await dbQuery("SELECT nome FROM Predios");
+  return predios as Predio[];
+};
+
 export const predioModel = {
-    insertPredio
+    insertPredio,
+    getPredios
   };
   
