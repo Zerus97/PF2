@@ -19,7 +19,23 @@ const getSalaRecursos = async (sala_id: string) => {
   return result as SalaRecurso[];
 };
 
+const getSalaByRecursos = async (recursos: string[]) => {
+  const query = `
+    SELECT sala_id
+    FROM Salas_Recursos
+    WHERE recurso_id IN (${recursos.map(() => "?").join(",")})
+    GROUP BY sala_id
+    HAVING COUNT(DISTINCT recurso_id) = ?
+  `;
+
+  const values = [...recursos, recursos.length];
+
+  const result = await dbQuery(query, values);
+  return result.map((row: any) => row.sala_id) as string[];
+};
+
 export const salaRecursoModel = {
   insertSalaRecurso,
-  getSalaRecursos
+  getSalaRecursos,
+  getSalaByRecursos
 };

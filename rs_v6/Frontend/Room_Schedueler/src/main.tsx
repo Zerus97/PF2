@@ -6,6 +6,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import Login from "./screens/LoginScreen";
 import MainMenu from "./screens/MainMenu";
 import ErrorPage from "./screens/ErrorPage";
+import ReserveScreen from "./screens/ReserveScreen";
+import Teste from "./screens/teste";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +18,16 @@ const router = createBrowserRouter([
   {
     path: "/main_menu",
     element: <MainMenu></MainMenu>,
+    errorElement: <ErrorPage></ErrorPage>,
+  },
+  {
+    path: "/reserving",
+    element: <ReserveScreen></ReserveScreen>,
+    errorElement: <ErrorPage></ErrorPage>,
+  },
+  {
+    path: "/teste",
+    element: <Teste></Teste>,
     errorElement: <ErrorPage></ErrorPage>,
   },
 ]);

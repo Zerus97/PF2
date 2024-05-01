@@ -1,7 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import { salaController } from "../controllers/sala";
 
-const salaRouter = Router();
+const salaRouter = express.Router();
 
-salaRouter.post("/post", salaController.insertsala);
-export { salaRouter };
+salaRouter.post("/post", salaController.insertSala);
+salaRouter.get("/predio/:predio/andar/:andar", salaController.getSala);
+
+export  { salaRouter };
