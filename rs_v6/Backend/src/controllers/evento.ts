@@ -13,8 +13,8 @@ const insertEvento = (req: Request, res: Response) => {
     return badRequest(res, "Número de participantes inválido");
   if (!evento.tol) return badRequest(res, "Tolerância inválida");
   if (!evento.status) return badRequest(res, "Status inválido");
-  if (!evento.id_sala) return badRequest(res, "ID da sala inválido");
-  if (!evento.id_responsavel)
+  if (!evento.sala_id) return badRequest(res, "ID da sala inválido");
+  if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
 
   eventoModel
@@ -25,6 +25,22 @@ const insertEvento = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const getAvailableSalas = (req: Request, res: Response) => {
+  const { date, tmini, tmfim } = req.query;
+
+  if (!date) return badRequest(res, "Data inválida");
+  if (!tmini) return badRequest(res, "Hora de início inválida");
+  if (!tmfim) return badRequest(res, "Hora de fim inválida");
+
+  eventoModel
+    .getAvailableSalas(date as string, tmini as string, tmfim as string)
+    .then((salas) => {
+      res.json(salas);
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 export const eventoController = {
   insertEvento,
+  getAvailableSalas,
 };
