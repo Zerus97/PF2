@@ -5,14 +5,12 @@ import { Evento, eventoModel } from "../models/evento";
 const insertEvento = (req: Request, res: Response) => {
   const evento = req.body as Evento;
 
-  if (!evento.dtini) return badRequest(res, "Data de início inválida");
-  if (!evento.dtfim) return badRequest(res, "Data de fim inválida");
+  if (!evento.data) return badRequest(res, "Data inválida");
   if (!evento.tmini) return badRequest(res, "Hora de início inválida");
   if (!evento.tmfim) return badRequest(res, "Hora de fim inválida");
   if (!evento.num_participantes)
     return badRequest(res, "Número de participantes inválido");
   if (!evento.tol) return badRequest(res, "Tolerância inválida");
-  if (!evento.status) return badRequest(res, "Status inválido");
   if (!evento.sala_id) return badRequest(res, "ID da sala inválido");
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
@@ -40,7 +38,21 @@ const getAvailableSalas = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const getEventosByResponsavel = (req: Request, res: Response) => {
+  const { responsavel_id } = req.params;
+
+  if (!responsavel_id) return badRequest(res, "ID do responsável inválido");
+
+  eventoModel
+    .getEventosByResponsavel(Number(responsavel_id))
+    .then((eventos) => {
+      res.json(eventos);
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 export const eventoController = {
   insertEvento,
   getAvailableSalas,
+  getEventosByResponsavel,
 };

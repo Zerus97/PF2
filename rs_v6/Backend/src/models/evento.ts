@@ -2,29 +2,25 @@ import { dbQuery } from "../services/db";
 
 export type Evento = {
   evento_id?: number;
-  dtini: string;
-  dtfim: string;
+  data: string;
   tmini: string;
   tmfim: string;
   num_participantes: number;
   tol: number;
-  status: string;
   sala_id: string;
   responsavel_id: number;
 };
 
 const insertEvento = async (evento: Evento) => {
   await dbQuery(
-    `INSERT INTO Eventos (dtini, dtfim, tmini, tmfim, num_participantes, tol, status, sala_id, responsavel_id) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO Eventos (data, tmini, tmfim, num_participantes, tol, sala_id, responsavel_id) 
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
-      evento.dtini,
-      evento.dtfim,
+      evento.data,
       evento.tmini,
       evento.tmfim,
       evento.num_participantes,
       evento.tol,
-      evento.status,
       evento.sala_id,
       evento.responsavel_id,
     ]
@@ -41,7 +37,7 @@ const getAvailableSalas = async (
   const result = await dbQuery(
     `SELECT sala_id FROM Salas 
      WHERE sala_id NOT IN (
-        SELECT sala_id FROM Eventos WHERE dtini = ? AND (
+        SELECT sala_id FROM Eventos WHERE data = ? AND (
             (? BETWEEN tmini AND tmfim)
              AND (? BETWEEN tmini AND tmfim)
             OR (? < tmini AND ? > tmini) 
@@ -52,7 +48,16 @@ const getAvailableSalas = async (
   return result;
 };
 
+const getEventosByResponsavel = async (responsavel_id: number) => {
+  const result = await dbQuery(
+    `SELECT * FROM Eventos WHERE responsavel_id = ?`,
+    [responsavel_id]
+  );
+  return result;
+};
+
 export const eventoModel = {
   insertEvento,
   getAvailableSalas,
+  getEventosByResponsavel,
 };
