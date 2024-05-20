@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { badRequest, internalServerError } from "../services/utils";
 import { Evento, eventoModel } from "../models/evento";
+import { Reserva, reservaModel } from "../models/reserva";
 
 const insertEvento = (req: Request, res: Response) => {
   const evento = req.body as Evento;
-
   if (!evento.data) return badRequest(res, "Data inválida");
   if (!evento.tmini) return badRequest(res, "Hora de início inválida");
   if (!evento.tmfim) return badRequest(res, "Hora de fim inválida");
@@ -15,10 +15,29 @@ const insertEvento = (req: Request, res: Response) => {
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
 
-  eventoModel
+  const result = eventoModel
     .insertEvento(evento)
     .then((id) => {
       res.json({ id });
+      const currentTime = new Date().toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      const reserva = {
+        matricula: evento.responsavel_id,
+        event_id: id,
+        status: "ativa",
+        data: evento.data,
+        time: currentTime,
+      } as Reserva;
+
+      reservaModel
+        .insertReserveStatus(reserva)
+        .then((status) => {
+          res.json({ status });
+        })
+        .catch((err) => internalServerError(res, err));
     })
     .catch((err) => internalServerError(res, err));
 };
