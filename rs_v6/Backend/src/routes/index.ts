@@ -6,6 +6,7 @@ import { recursoRouter } from "./recurso";
 import { salaRecursoRouter } from "./sala_recurso";
 import { eventoRouter } from "./evento";
 import { presencaRouter } from "./presenca";
+import { reservaRouter } from "./reserva";
 
 export const useRoutes = (app: Application) => {
   const apiRouter = Router();
@@ -16,5 +17,6 @@ export const useRoutes = (app: Application) => {
   apiRouter.use("/sala_recurso", salaRecursoRouter);
   apiRouter.use("/evento", eventoRouter);
   apiRouter.use("/presenca", presencaRouter);
+  apiRouter.use("/reserva", reservaRouter);
   app.use("/api/v1", apiRouter);
 };
