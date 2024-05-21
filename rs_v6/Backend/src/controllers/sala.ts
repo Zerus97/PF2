@@ -21,6 +21,7 @@ const getSala = (req: Request, res: Response) => {
   const params: string[] = [];
   params[0] = req.params.predio;
   params[1] = req.params.andar;
+  params[2] = req.params.capacidade;
 
   salaModel
     .getSala(params)

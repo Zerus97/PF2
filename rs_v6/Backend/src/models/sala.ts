@@ -30,6 +30,11 @@ const getSala = async (params: string[]) => {
     values.push(params[1]);
   }
 
+  if (params[2] != "-1") {
+    query += " AND capacidade >= ?";
+    values.push(params[2]);
+  }
+
   const result = await dbQuery(query, values);
   return result as Sala[];
 };
