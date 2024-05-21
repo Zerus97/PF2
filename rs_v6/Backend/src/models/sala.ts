@@ -1,21 +1,20 @@
 import { dbQuery } from "../services/db";
 
 export type Sala = {
-    sala_id: string;
-    predio: string;
-    andar: number;
-    numero: number
-}
+  sala_id?: string;
+  predio: string;
+  andar: number;
+  numero: number;
+  capacidade: number;
+};
 
 const insertSala = async (sala: Sala) => {
-  const query = `INSERT INTO Salas VALUES (CONCAT('${sala.predio}', '${sala.andar}', '${sala.numero}'), ?, ?, ?);`
-  await dbQuery(query, [
-    sala.predio,
-    sala.andar,
-    sala.numero
+  const query = `INSERT INTO Salas VALUES (CONCAT('${sala.predio}', '${sala.andar}', '${sala.numero}'), ?, ?, ?, ?);`;
+  await dbQuery(query, [sala.predio, sala.andar, sala.numero, sala.capacidade]);
+  let result = await dbQuery("SELECT sala_id FROM Salas WHERE sala_id = ?", [
+    sala.sala_id,
   ]);
-  let result = await dbQuery("SELECT sala_id FROM Salas WHERE sala_id = ?", [sala.sala_id]);
-  return result[0].sala_id as string || undefined;
+  return (result[0].sala_id as string) || undefined;
 };
 const getSala = async (params: string[]) => {
   let query = "SELECT sala_id FROM Salas WHERE 1 = 1";
@@ -37,5 +36,5 @@ const getSala = async (params: string[]) => {
 
 export const salaModel = {
   insertSala,
-  getSala
+  getSala,
 };
