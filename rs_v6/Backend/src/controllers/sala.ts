@@ -7,6 +7,7 @@ const insertSala = (req: Request, res: Response) => {
   if (!sala.predio) badRequest(res, "predio vazio");
   if (!sala.andar) badRequest(res, "andar vazio");
   if (!sala.numero) badRequest(res, "numero vazio");
+  if (!sala.capacidade) badRequest(res, "capacidade vazio");
 
   salaModel
     .insertSala(sala)
@@ -22,14 +23,14 @@ const getSala = (req: Request, res: Response) => {
   params[1] = req.params.andar;
 
   salaModel
-  .getSala(params)
-  .then((salas) => {
-    res.json({ salas });
-  })
-  .catch((err) => internalServerError(res, err));
-}
+    .getSala(params)
+    .then((salas) => {
+      res.json({ salas });
+    })
+    .catch((err) => internalServerError(res, err));
+};
 
 export const salaController = {
   insertSala,
-  getSala
+  getSala,
 };

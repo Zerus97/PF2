@@ -1,11 +1,13 @@
 import { Box, Button, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   user?: string;
 }
 
 function MainMenu({ user }: Props) {
+  const navigate = useNavigate();
   return (
     <>
       <Box
@@ -39,7 +41,7 @@ function MainMenu({ user }: Props) {
         <Button
           variant="contained"
           sx={{ width: "fit-content", mb: 1 }}
-          onClick={() => console.log("Clicked")}
+          onClick={() => navigate("/reserving")}
         >
           Reservar Salas
         </Button>
