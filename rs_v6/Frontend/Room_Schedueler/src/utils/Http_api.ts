@@ -39,7 +39,6 @@ async function getRecursos() {
     for (let i = 0; i < response.data.recursos.length; i++) {
       response_array[i] = response.data.recursos[i].recurso_id;
     }
-    console.log(response_array);
     return response_array;
   } catch (error) {
     console.log(error);

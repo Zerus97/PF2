@@ -15,6 +15,7 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  Button,
 } from "@mui/material";
 import Http_api from "../utils/Http_api";
 
@@ -86,6 +87,27 @@ export default function ReserveScreen() {
     );
   };
 
+  const handlePrintSelection = () => {
+    console.log("Prédio selecionado:", selectedPredio);
+    console.log(
+      "Data da reserva:",
+      reserve_data
+        ? reserve_data.format("DD-MM-YYYY")
+        : "Nenhuma data selecionada"
+    );
+    console.log(
+      "Hora de início:",
+      hr_ini ? hr_ini.format("HH:mm") : "Nenhuma hora selecionada"
+    );
+    console.log(
+      "Hora do fim:",
+      hr_fim ? hr_fim.format("HH:mm") : "Nenhuma hora selecionada"
+    );
+    console.log("Número de participantes:", numParticipantes);
+    console.log("Tolerância (minutos):", tolerancia);
+    console.log("Itens selecionados:", selectedItems.join(", "));
+  };
+
   return (
     <>
       <h1>Room Scheduler</h1>
@@ -94,7 +116,7 @@ export default function ReserveScreen() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "40vh",
+          height: "60vh",
         }}
       >
         <Box sx={{ width: "35%" }}>
@@ -185,6 +207,15 @@ export default function ReserveScreen() {
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handlePrintSelection}
+              >
+                Procurar Salas
+              </Button>
             </Grid>
           </Grid>
         </Box>
