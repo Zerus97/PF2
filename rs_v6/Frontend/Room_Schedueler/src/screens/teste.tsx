@@ -87,25 +87,22 @@ export default function ReserveScreen() {
     );
   };
 
-  const handlePrintSelection = () => {
-    console.log("Prédio selecionado:", selectedPredio);
-    console.log(
-      "Data da reserva:",
-      reserve_data
-        ? reserve_data.format("DD-MM-YYYY")
-        : "Nenhuma data selecionada"
-    );
-    console.log(
-      "Hora de início:",
-      hr_ini ? hr_ini.format("HH:mm") : "Nenhuma hora selecionada"
-    );
-    console.log(
-      "Hora do fim:",
-      hr_fim ? hr_fim.format("HH:mm") : "Nenhuma hora selecionada"
-    );
-    console.log("Número de participantes:", numParticipantes);
-    console.log("Tolerância (minutos):", tolerancia);
-    console.log("Itens selecionados:", selectedItems.join(", "));
+  const handleSearchSalas = async () => {
+    try {
+      const searchParams = {
+        recursos: selectedItems,
+        capacidade: numParticipantes.toString(),
+        date: reserve_data ? reserve_data.format("YYYY-MM-DD") : "",
+        tmini: hr_ini ? hr_ini.format("HH:mm") : "",
+        tmfim: hr_fim ? hr_fim.format("HH:mm") : "",
+      };
+
+      const availableSalas = await Http_api.searchSalas(searchParams);
+      console.log("Available rooms:", availableSalas);
+      // Here you can handle the available rooms, e.g., set them to a state and display them
+    } catch (error) {
+      console.error("Error searching for rooms:", error);
+    }
   };
 
   return (
@@ -212,7 +209,7 @@ export default function ReserveScreen() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handlePrintSelection}
+                onClick={handleSearchSalas}
               >
                 Procurar Salas
               </Button>

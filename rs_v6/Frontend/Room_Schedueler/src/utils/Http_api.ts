@@ -46,10 +46,30 @@ async function getRecursos() {
   }
 }
 
+async function searchSalas(params: {
+  recursos: string[];
+  capacidade: string;
+  date: string;
+  tmini: string;
+  tmfim: string;
+}) {
+  try {
+    const response = await axios.post(
+      "http://localhost:8091/api/v1/searcher",
+      params
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
   getRecursos,
+  searchSalas,
 };
 
 export default Http_api;

@@ -39,7 +39,16 @@ const getSala = async (params: string[]) => {
   return result as Sala[];
 };
 
+const getSalaCapacidade = async (param: string) => {
+  let query = "SELECT sala_id FROM Salas WHERE capacidade >= ?";
+  const values = [];
+  values[0] = param;
+  const result = await dbQuery(query, values);
+  return result.map((row: any) => row.sala_id) as string[];
+};
+
 export const salaModel = {
   insertSala,
   getSala,
+  getSalaCapacidade
 };
