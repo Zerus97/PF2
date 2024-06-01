@@ -67,12 +67,10 @@ const searchSalas2 = async (req: Request, res: Response) => {
     }
 
     result3 = await eventoModel.getAvailableSalas(date, tmini, tmfim);
-
     let intersection: string[] = [];
-
-    if (!recursos && !capacidade) {
+    if (recursos.length == 0 && !capacidade) {
       intersection = result3;
-    } else if (!recursos) {
+    } else if (recursos.length == 0) {
       intersection = result2.filter((value) => result3.includes(value));
     } else if (!capacidade) {
       intersection = result1.filter((value) => result3.includes(value));

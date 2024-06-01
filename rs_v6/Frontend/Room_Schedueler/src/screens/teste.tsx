@@ -18,6 +18,7 @@ import {
   Button,
 } from "@mui/material";
 import Http_api from "../utils/Http_api";
+import { useNavigate } from "react-router-dom";
 
 export default function ReserveScreen() {
   const [predios, setPredios] = useState<string[]>([]);
@@ -29,6 +30,7 @@ export default function ReserveScreen() {
   const [tolerancia, setTolerancia] = useState<number | string>("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [recursos, setRecursos] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPrediosAndRecursos = async () => {
@@ -99,7 +101,9 @@ export default function ReserveScreen() {
 
       const availableSalas = await Http_api.searchSalas(searchParams);
       console.log("Available rooms:", availableSalas);
-      // Here you can handle the available rooms, e.g., set them to a state and display them
+
+      // Navigate to AvailableRooms component with the results
+      navigate("/available-rooms", { state: { availableSalas } });
     } catch (error) {
       console.error("Error searching for rooms:", error);
     }

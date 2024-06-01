@@ -2,33 +2,38 @@ import React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
-//import App from "./App";
 import Login from "./screens/LoginScreen";
 import MainMenu from "./screens/MainMenu";
 import ErrorPage from "./screens/ErrorPage";
 import ReserveScreen from "./screens/ReserveScreen";
+import AvailableRooms from "./screens/AvailableRooms";
 import Teste from "./screens/teste";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login></Login>,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <Login />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/main_menu",
-    element: <MainMenu></MainMenu>,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <MainMenu />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/reserving",
-    element: <ReserveScreen></ReserveScreen>,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <ReserveScreen />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/available-rooms",
+    element: <AvailableRooms />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/teste",
-    element: <Teste></Teste>,
-    errorElement: <ErrorPage></ErrorPage>,
+    element: <Teste />,
+    errorElement: <ErrorPage />,
   },
 ]);
 
