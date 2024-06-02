@@ -46,6 +46,22 @@ async function getRecursos() {
   }
 }
 
+async function getSalaRecursos(sala_id: string) {
+  try {
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/sala_recurso/get/" + sala_id
+    );
+    const response_array: string[] = [];
+    for (let i = 0; i < response.data.recursos.length; i++) {
+      response_array[i] = response.data.recursos[i].recurso_id;
+    }
+    return response_array;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 async function searchSalas(params: {
   recursos: string[];
   capacidade: string;
@@ -69,6 +85,7 @@ const Http_api = {
   login,
   getPredios,
   getRecursos,
+  getSalaRecursos,
   searchSalas,
 };
 

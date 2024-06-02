@@ -16,6 +16,7 @@ import {
   Checkbox,
   ListItemText,
   Button,
+  Tooltip,
 } from "@mui/material";
 import Http_api from "../utils/Http_api";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +31,11 @@ export default function ReserveScreen() {
   const [tolerancia, setTolerancia] = useState<number | string>("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [recursos, setRecursos] = useState<string[]>([]);
+  const [availableSalas, setAvailableSalas] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
+    []
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,10 +89,7 @@ export default function ReserveScreen() {
     const {
       target: { value },
     } = event;
-    setSelectedItems(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setSelectedItems(typeof value === "string" ? value.split(",") : value);
   };
 
   const handleSearchSalas = async () => {
@@ -102,11 +105,28 @@ export default function ReserveScreen() {
       const availableSalas = await Http_api.searchSalas(searchParams);
       console.log("Available rooms:", availableSalas);
 
-      // Navigate to AvailableRooms component with the results
-      navigate("/available-rooms", { state: { availableSalas } });
+      setAvailableSalas(availableSalas);
+      setShowResults(true);
     } catch (error) {
       console.error("Error searching for rooms:", error);
     }
+  };
+
+  const handleRoomMouseEnter = async (roomId: string) => {
+    try {
+      const recursos = await Http_api.getSalaRecursos(roomId);
+      setHoveredRoomResources(recursos);
+    } catch (error) {
+      console.error("Error fetching room resources:", error);
+    }
+  };
+
+  const handleRoomMouseLeave = () => {
+    setHoveredRoomResources([]);
+  };
+
+  const handleReserveRoom = () => {
+    // Add functionality for reserving the selected room here
   };
 
   return (
@@ -118,6 +138,7 @@ export default function ReserveScreen() {
           justifyContent: "center",
           alignItems: "center",
           height: "60vh",
+          flexDirection: "column",
         }}
       >
         <Box sx={{ width: "35%" }}>
@@ -214,12 +235,44 @@ export default function ReserveScreen() {
                 variant="contained"
                 color="primary"
                 onClick={handleSearchSalas}
+                sx={{ marginRight: 2 }}
               >
                 Procurar Salas
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleReserveRoom}
+              >
+                Reservar Sala
               </Button>
             </Grid>
           </Grid>
         </Box>
+        {showResults && (
+          <Box sx={{ width: "50%", marginTop: 4 }}>
+            <h2>Available Rooms</h2>
+            {availableSalas.length > 0 ? (
+              <Grid container spacing={2}>
+                {availableSalas.map((room, index) => (
+                  <Grid item key={index} xs={12} sm={6} md={4}>
+                    <Tooltip
+                      title={hoveredRoomResources.join(", ")}
+                      onOpen={() => handleRoomMouseEnter(room)}
+                      onClose={handleRoomMouseLeave}
+                    >
+                      <Button variant="outlined" fullWidth>
+                        {room}
+                      </Button>
+                    </Tooltip>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <p>No rooms available.</p>
+            )}
+          </Box>
+        )}
       </Box>
     </>
   );

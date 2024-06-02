@@ -6,7 +6,6 @@ import Login from "./screens/LoginScreen";
 import MainMenu from "./screens/MainMenu";
 import ErrorPage from "./screens/ErrorPage";
 import ReserveScreen from "./screens/ReserveScreen";
-import AvailableRooms from "./screens/AvailableRooms";
 import Teste from "./screens/teste";
 
 const router = createBrowserRouter([
@@ -23,11 +22,6 @@ const router = createBrowserRouter([
   {
     path: "/reserving",
     element: <ReserveScreen />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/available-rooms",
-    element: <AvailableRooms />,
     errorElement: <ErrorPage />,
   },
   {
