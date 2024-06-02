@@ -17,6 +17,8 @@ import {
   ListItemText,
   Button,
   Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Http_api from "../utils/Http_api";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +38,12 @@ export default function ReserveScreen() {
   const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
     []
   );
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -100,6 +108,7 @@ export default function ReserveScreen() {
         date: reserve_data ? reserve_data.format("YYYY-MM-DD") : "",
         tmini: hr_ini ? hr_ini.format("HH:mm") : "",
         tmfim: hr_fim ? hr_fim.format("HH:mm") : "",
+        predio: selectedPredio,
       };
 
       const availableSalas = await Http_api.searchSalas(searchParams);
@@ -125,8 +134,31 @@ export default function ReserveScreen() {
     setHoveredRoomResources([]);
   };
 
-  const handleReserveRoom = () => {
-    // Add functionality for reserving the selected room here
+  const handleReserveRoom = async (roomId: string) => {
+    try {
+      const response = await Http_api.insertEvento(
+        reserve_data ? reserve_data.format("YYYY-MM-DD") : "",
+        hr_ini ? hr_ini.format("HH:mm") : "",
+        hr_fim ? hr_fim.format("HH:mm") : "",
+        roomId,
+        "1821315", // Placeholder for responsavel_id, replace with actual ID as needed
+        numParticipantes.toString(),
+        tolerancia.toString()
+      );
+
+      setSnackbarMessage("Room reserved successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error reserving room:", error);
+      setSnackbarMessage("Failed to reserve room.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -135,13 +167,12 @@ export default function ReserveScreen() {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "60vh",
           flexDirection: "column",
+          alignItems: "center",
+          paddingBottom: 4,
         }}
       >
-        <Box sx={{ width: "35%" }}>
+        <Box sx={{ width: "35%", marginBottom: 4 }}>
           <Grid container spacing={5}>
             <Grid item xs={12} md={6}>
               <FormControl sx={{ minWidth: 245 }}>
@@ -235,33 +266,35 @@ export default function ReserveScreen() {
                 variant="contained"
                 color="primary"
                 onClick={handleSearchSalas}
-                sx={{ marginRight: 2 }}
+                sx={{ marginRight: "1rem" }}
               >
                 Procurar Salas
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleReserveRoom}
-              >
-                Reservar Sala
               </Button>
             </Grid>
           </Grid>
         </Box>
+
         {showResults && (
-          <Box sx={{ width: "50%", marginTop: 4 }}>
-            <h2>Available Rooms</h2>
+          <Box sx={{ width: "80%" }}>
+            <h2>Salas disponíveis</h2>
             {availableSalas.length > 0 ? (
               <Grid container spacing={2}>
-                {availableSalas.map((room, index) => (
-                  <Grid item key={index} xs={12} sm={6} md={4}>
+                {availableSalas.map((room) => (
+                  <Grid item xs={12} md={6} key={room}>
                     <Tooltip
-                      title={hoveredRoomResources.join(", ")}
-                      onOpen={() => handleRoomMouseEnter(room)}
-                      onClose={handleRoomMouseLeave}
+                      title={
+                        hoveredRoomResources.length > 0
+                          ? hoveredRoomResources.join(", ")
+                          : "Loading resources..."
+                      }
                     >
-                      <Button variant="outlined" fullWidth>
+                      <Button
+                        variant="outlined"
+                        fullWidth
+                        onMouseEnter={() => handleRoomMouseEnter(room)}
+                        onMouseLeave={handleRoomMouseLeave}
+                        onClick={() => handleReserveRoom(room)}
+                      >
                         {room}
                       </Button>
                     </Tooltip>
@@ -269,10 +302,24 @@ export default function ReserveScreen() {
                 ))}
               </Grid>
             ) : (
-              <p>No rooms available.</p>
+              <p>Sem salas disponíveis.</p>
             )}
           </Box>
         )}
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );

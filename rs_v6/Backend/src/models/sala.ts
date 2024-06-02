@@ -19,10 +19,9 @@ const insertSala = async (sala: Sala) => {
 const getSala = async (params: string[]) => {
   let query = "SELECT sala_id FROM Salas WHERE 1 = 1";
   let values: any[] = [];
-
   if (params[0] != "-1") {
     query += " AND predio = ?";
-    values.push(params[0]);
+    values.push(params[0][0]);
   }
 
   if (params[1] != "-1") {
@@ -36,7 +35,8 @@ const getSala = async (params: string[]) => {
   }
 
   const result = await dbQuery(query, values);
-  return result as Sala[];
+  return result.map((row: any) => row.sala_id) as string[];
+  //return result as Sala[];
 };
 
 const getSalaCapacidade = async (param: string) => {
@@ -50,5 +50,5 @@ const getSalaCapacidade = async (param: string) => {
 export const salaModel = {
   insertSala,
   getSala,
-  getSalaCapacidade
+  getSalaCapacidade,
 };
