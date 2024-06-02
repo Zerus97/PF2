@@ -45,7 +45,7 @@ const getAvailableSalas = async (
      )`,
     [date, tmini, tmfim, tmini, tmfim, tmini]
   );
-  return result;
+  return result.map((row: any) => row.sala_id) as string[];
 };
 
 const getEventosByResponsavel = async (responsavel_id: number) => {

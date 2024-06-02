@@ -16,6 +16,7 @@ import {
   Checkbox,
   ListItemText,
   Button,
+  Tooltip,
 } from "@mui/material";
 import Http_api from "../utils/Http_api";
 
@@ -29,6 +30,11 @@ export default function ReserveScreen() {
   const [tolerancia, setTolerancia] = useState<number | string>("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [recursos, setRecursos] = useState<string[]>([]);
+  const [availableSalas, setAvailableSalas] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchPrediosAndRecursos = async () => {
@@ -81,31 +87,44 @@ export default function ReserveScreen() {
     const {
       target: { value },
     } = event;
-    setSelectedItems(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setSelectedItems(typeof value === "string" ? value.split(",") : value);
   };
 
-  const handlePrintSelection = () => {
-    console.log("Prédio selecionado:", selectedPredio);
-    console.log(
-      "Data da reserva:",
-      reserve_data
-        ? reserve_data.format("DD-MM-YYYY")
-        : "Nenhuma data selecionada"
-    );
-    console.log(
-      "Hora de início:",
-      hr_ini ? hr_ini.format("HH:mm") : "Nenhuma hora selecionada"
-    );
-    console.log(
-      "Hora do fim:",
-      hr_fim ? hr_fim.format("HH:mm") : "Nenhuma hora selecionada"
-    );
-    console.log("Número de participantes:", numParticipantes);
-    console.log("Tolerância (minutos):", tolerancia);
-    console.log("Itens selecionados:", selectedItems.join(", "));
+  const handleSearchSalas = async () => {
+    try {
+      const searchParams = {
+        recursos: selectedItems,
+        capacidade: numParticipantes.toString(),
+        date: reserve_data ? reserve_data.format("YYYY-MM-DD") : "",
+        tmini: hr_ini ? hr_ini.format("HH:mm") : "",
+        tmfim: hr_fim ? hr_fim.format("HH:mm") : "",
+      };
+
+      const availableSalas = await Http_api.searchSalas(searchParams);
+      console.log("Available rooms:", availableSalas);
+
+      setAvailableSalas(availableSalas);
+      setShowResults(true);
+    } catch (error) {
+      console.error("Error searching for rooms:", error);
+    }
+  };
+
+  const handleRoomMouseEnter = async (roomId: string) => {
+    try {
+      const recursos = await Http_api.getSalaRecursos(roomId);
+      setHoveredRoomResources(recursos);
+    } catch (error) {
+      console.error("Error fetching room resources:", error);
+    }
+  };
+
+  const handleRoomMouseLeave = () => {
+    setHoveredRoomResources([]);
+  };
+
+  const handleReserveRoom = () => {
+    // Add functionality for reserving the selected room here
   };
 
   return (
@@ -117,6 +136,7 @@ export default function ReserveScreen() {
           justifyContent: "center",
           alignItems: "center",
           height: "60vh",
+          flexDirection: "column",
         }}
       >
         <Box sx={{ width: "35%" }}>
@@ -212,13 +232,38 @@ export default function ReserveScreen() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handlePrintSelection}
+                onClick={handleSearchSalas}
+                sx={{ marginRight: 2 }}
               >
                 Procurar Salas
               </Button>
             </Grid>
           </Grid>
         </Box>
+        {showResults && (
+          <Box sx={{ width: "50%", marginTop: 4 }}>
+            <h2>Available Rooms</h2>
+            {availableSalas.length > 0 ? (
+              <Grid container spacing={2}>
+                {availableSalas.map((room, index) => (
+                  <Grid item key={index} xs={12} sm={6} md={4}>
+                    <Tooltip
+                      title={hoveredRoomResources.join(", ")}
+                      onOpen={() => handleRoomMouseEnter(room)}
+                      onClose={handleRoomMouseLeave}
+                    >
+                      <Button variant="outlined" fullWidth>
+                        {room}
+                      </Button>
+                    </Tooltip>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <p>No rooms available.</p>
+            )}
+          </Box>
+        )}
       </Box>
     </>
   );
