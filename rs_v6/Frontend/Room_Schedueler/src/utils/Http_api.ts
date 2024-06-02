@@ -81,12 +81,45 @@ async function searchSalas(params: {
   }
 }
 
+async function insertEvento(
+  data: string,
+  tmini: string,
+  tmfim: string,
+  sala_id: string,
+  responsavel_id: string,
+  num_participantes?: string,
+  tol?: string,
+  predio?: string
+) {
+  try {
+    responsavel_id = "1821315";
+    const response = await axios.post(
+      "http://localhost:8091/api/v1/evento/post_evento",
+      {
+        data,
+        tmini,
+        tmfim,
+        sala_id,
+        responsavel_id,
+        num_participantes,
+        tol,
+        predio,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
   getRecursos,
   getSalaRecursos,
   searchSalas,
+  insertEvento,
 };
 
 export default Http_api;

@@ -3,43 +3,44 @@ import { badRequest, internalServerError } from "../services/utils";
 import { Evento, eventoModel } from "../models/evento";
 import { Reserva, reservaModel } from "../models/reserva";
 
-const insertEvento = (req: Request, res: Response) => {
+const insertEvento = async (req: Request, res: Response) => {
   const evento = req.body as Evento;
+  //console.log(evento);
+
+  // Validate input
   if (!evento.data) return badRequest(res, "Data inválida");
   if (!evento.tmini) return badRequest(res, "Hora de início inválida");
   if (!evento.tmfim) return badRequest(res, "Hora de fim inválida");
-  if (!evento.num_participantes)
-    return badRequest(res, "Número de participantes inválido");
-  if (!evento.tol) return badRequest(res, "Tolerância inválida");
+  if (!evento.num_participantes) evento.num_participantes = -1;
+  if (!evento.tol) evento.tol = -1;
   if (!evento.sala_id) return badRequest(res, "ID da sala inválido");
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
 
-  const result = eventoModel
-    .insertEvento(evento)
-    .then((id) => {
-      res.json({ id });
-      const currentTime = new Date().toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      const reserva = {
-        matricula: evento.responsavel_id,
-        event_id: id,
-        status: "ativa",
-        data: evento.data,
-        time: currentTime,
-      } as Reserva;
+  try {
+    // Insert event
+    const id = await eventoModel.insertEvento(evento);
 
-      reservaModel
-        .insertReserveStatus(reserva)
-        .then((status) => {
-          res.json({ status });
-        })
-        .catch((err) => internalServerError(res, err));
-    })
-    .catch((err) => internalServerError(res, err));
+    // Insert reservation status
+    const currentTime = new Date().toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    const reserva = {
+      matricula: evento.responsavel_id,
+      event_id: id,
+      status: "ativa",
+      data: evento.data,
+      time: currentTime,
+    } as Reserva;
+
+    const status = await reservaModel.insertReserveStatus(reserva);
+
+    res.json({ id, status });
+  } catch (err) {
+    internalServerError(res, err as Error);
+  }
 };
 
 const getAvailableSalas = (req: Request, res: Response) => {
