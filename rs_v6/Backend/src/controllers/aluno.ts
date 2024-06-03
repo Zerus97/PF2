@@ -26,12 +26,23 @@ const login = (req: Request, res: Response) => {
   alunoModel
     .login(aluno)
     .then((id) => {
-      return res.json({id});
+      return res.json({ id });
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
+const getNome = (req: Request, res: Response) => {
+  const matricula = req.params.matricula;
+  alunoModel
+    .getNome(matricula)
+    .then((nome) => {
+      return res.json({ nome });
     })
     .catch((err) => internalServerError(res, err));
 };
 
 export const alunoController = {
   insertAluno,
-  login
+  login,
+  getNome,
 };

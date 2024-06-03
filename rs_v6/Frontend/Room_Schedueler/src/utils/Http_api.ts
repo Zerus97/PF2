@@ -113,6 +113,23 @@ async function insertEvento(
   }
 }
 
+async function getNome(matricula: string) {
+  try {
+    console.log("Http_api " + matricula);
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/aluno/" + matricula
+    );
+    const response_array: string[] = [];
+    for (let i = 0; i < response.data.nome.length; i++) {
+      response_array[i] = response.data.nome[i].nome;
+    }
+    return response_array;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -120,6 +137,7 @@ const Http_api = {
   getSalaRecursos,
   searchSalas,
   insertEvento,
+  getNome,
 };
 
 export default Http_api;

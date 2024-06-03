@@ -38,6 +38,7 @@ export default function ReserveScreen() {
   const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
     []
   );
+  const [isResourcesLoaded, setIsResourcesLoaded] = useState<boolean>(false); // New state variable
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -125,13 +126,17 @@ export default function ReserveScreen() {
     try {
       const recursos = await Http_api.getSalaRecursos(roomId);
       setHoveredRoomResources(recursos);
+      setIsResourcesLoaded(true);
     } catch (error) {
       console.error("Error fetching room resources:", error);
+      setHoveredRoomResources([]);
+      setIsResourcesLoaded(true);
     }
   };
 
   const handleRoomMouseLeave = () => {
     setHoveredRoomResources([]);
+    setIsResourcesLoaded(false); // Reset resources loaded state
   };
 
   const handleReserveRoom = async (roomId: string) => {
@@ -283,9 +288,11 @@ export default function ReserveScreen() {
                   <Grid item xs={12} md={6} key={room}>
                     <Tooltip
                       title={
-                        hoveredRoomResources.length > 0
-                          ? hoveredRoomResources.join(", ")
-                          : "Loading resources..."
+                        isResourcesLoaded
+                          ? hoveredRoomResources.length > 0
+                            ? hoveredRoomResources.join(", ")
+                            : "Sem recursos"
+                          : "Carregando"
                       }
                     >
                       <Button
