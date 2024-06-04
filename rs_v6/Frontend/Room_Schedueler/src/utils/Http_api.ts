@@ -92,7 +92,6 @@ async function insertEvento(
   predio?: string
 ) {
   try {
-    responsavel_id = "1821315";
     const response = await axios.post(
       "http://localhost:8091/api/v1/evento/post_evento",
       {
@@ -113,6 +112,18 @@ async function insertEvento(
   }
 }
 
+async function getNome(matricula: string) {
+  try {
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/aluno/" + matricula
+    );
+    return response.data.nome;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -120,6 +131,7 @@ const Http_api = {
   getSalaRecursos,
   searchSalas,
   insertEvento,
+  getNome,
 };
 
 export default Http_api;

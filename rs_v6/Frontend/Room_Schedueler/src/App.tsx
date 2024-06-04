@@ -1,7 +1,25 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./screens/LoginScreen";
+import MainMenu from "./screens/MainMenu";
+import { useState } from "react";
+import ReserveScreen from "./screens/ReserveScreen";
 
 function App() {
-  return <Login></Login>;
+  const [user, setUser] = useState<any>(null);
+
+  const handleLogin = (userData: any) => {
+    setUser(userData);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login handleLogin={handleLogin} />} />
+        <Route path="/main_menu" element={<MainMenu user={user} />} />
+        <Route path="/reserving" element={<ReserveScreen user={user} />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
