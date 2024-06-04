@@ -2,16 +2,23 @@ import { useState } from "react";
 import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Http_api from "../utils/Http_api";
-function Login() {
+
+interface LoginProps {
+  handleLogin: (userData: any) => void; // Define handleLogin prop
+}
+
+function Login({ handleLogin }: LoginProps) {
+  // Receive handleLogin as prop
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLoginButtonClick = async () => {
     console.log("Matrícula:", matricula);
     console.log("Senha:", senha);
     const response = await Http_api.login(Number(matricula), senha);
     if (response.id) {
+      handleLogin(matricula); // Call handleLogin with user data
       navigate("/main_menu");
     }
   };
@@ -62,7 +69,7 @@ function Login() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={handleLogin}
+          onClick={handleLoginButtonClick}
           style={{ alignSelf: "center", marginRight: "10px" }}
         >
           Entrar
@@ -70,7 +77,7 @@ function Login() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={handleLogin}
+          onClick={handleLoginButtonClick}
           style={{ alignSelf: "center" }}
         >
           Registrar

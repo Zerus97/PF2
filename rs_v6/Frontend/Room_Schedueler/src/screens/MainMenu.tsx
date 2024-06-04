@@ -9,7 +9,6 @@ interface Props {
 }
 
 function MainMenu({ user }: Props) {
-  console.log("user MainMenu prop: " + user);
   const [nome, setNome] = useState<string>(""); // State to store Nome
   const navigate = useNavigate();
 
@@ -18,9 +17,8 @@ function MainMenu({ user }: Props) {
       try {
         // Call getNome function from Http_api
         const response = await Http_api.getNome(user || ""); // Pass the user's matricula
-        console.log("getNome MainMenu response: " + response);
         if (response && response.length > 0) {
-          setNome(response[0]); // Assuming the response is an array with a single Nome
+          setNome(response); // Assuming the response is an array with a single Nome
         }
       } catch (error) {
         console.error("Error fetching Nome:", error);
@@ -40,16 +38,25 @@ function MainMenu({ user }: Props) {
           display: "flex",
           flexDirection: "row",
           p: 2,
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
         noValidate
         autoComplete="off"
       >
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Room Scheduler
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography>{nome}</Typography> {/* Display the fetched Nome */}
-          <FaUser style={{ marginLeft: "5px" }} />
+        <Typography variant="h4">Room Scheduler</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: "10px",
+            textAlign: "center",
+          }}
+        >
+          <FaUser style={{ fontSize: "24px" }} />
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {nome}
+          </Typography>
         </Box>
       </Box>
       <Box

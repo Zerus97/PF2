@@ -23,7 +23,11 @@ import {
 import Http_api from "../utils/Http_api";
 import { useNavigate } from "react-router-dom";
 
-export default function ReserveScreen() {
+interface ReserveScreenProps {
+  user?: string; // Add user prop
+}
+
+export default function ReserveScreen({ user }: ReserveScreenProps) {
   const [predios, setPredios] = useState<string[]>([]);
   const [selectedPredio, setSelectedPredio] = useState<string>("");
   const [reserve_data, setReserve_data] = useState<Dayjs | null>(null);
@@ -146,7 +150,7 @@ export default function ReserveScreen() {
         hr_ini ? hr_ini.format("HH:mm") : "",
         hr_fim ? hr_fim.format("HH:mm") : "",
         roomId,
-        "1821315", // Placeholder for responsavel_id, replace with actual ID as needed
+        user || "", // Use user matricula here
         numParticipantes.toString(),
         tolerancia.toString()
       );
@@ -219,115 +223,105 @@ export default function ReserveScreen() {
             <Grid item xs={12} md={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <TimePicker
-                  label="Hora do Fim"
+                  label="Hora de Fim"
                   value={hr_fim}
                   onChange={handleHrfimChange}
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Número de Participantes"
-                type="number"
-                value={numParticipantes}
-                onChange={handleNumParticipantesChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Tolerância (minutos)"
-                type="number"
-                value={tolerancia}
-                onChange={handleToleranciaChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl sx={{ minWidth: 245 }}>
-                <InputLabel id="demo-multiple-checkbox-label">
-                  Itens Selecionados
-                </InputLabel>
-                <Select
-                  labelId="demo-multiple-checkbox-label"
-                  id="demo-multiple-checkbox"
-                  multiple
-                  value={selectedItems}
-                  onChange={handleSelectedItemsChange}
-                  input={<OutlinedInput label="Itens Selecionados" />}
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  {recursos.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      <Checkbox checked={selectedItems.indexOf(item) > -1} />
-                      <ListItemText primary={item} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSearchSalas}
-                sx={{ marginRight: "1rem" }}
-              >
-                Procurar Salas
-              </Button>
-            </Grid>
           </Grid>
         </Box>
-
-        {showResults && (
-          <Box sx={{ width: "80%" }}>
-            <h2>Salas disponíveis</h2>
-            {availableSalas.length > 0 ? (
-              <Grid container spacing={2}>
-                {availableSalas.map((room) => (
-                  <Grid item xs={12} md={6} key={room}>
-                    <Tooltip
-                      title={
-                        isResourcesLoaded
-                          ? hoveredRoomResources.length > 0
-                            ? hoveredRoomResources.join(", ")
-                            : "Sem recursos"
-                          : "Carregando"
-                      }
-                    >
-                      <Button
-                        variant="outlined"
-                        fullWidth
-                        onMouseEnter={() => handleRoomMouseEnter(room)}
-                        onMouseLeave={handleRoomMouseLeave}
-                        onClick={() => handleReserveRoom(room)}
-                      >
-                        {room}
-                      </Button>
-                    </Tooltip>
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              <p>Sem salas disponíveis.</p>
-            )}
-          </Box>
-        )}
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "35%",
+            "& .MuiTextField-root": { m: 1 },
+          }}
         >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
+          <TextField
+            id="num-participantes"
+            label="Número de Participantes"
+            type="number"
+            value={numParticipantes}
+            onChange={handleNumParticipantesChange}
+          />
+          <TextField
+            id="tolerancia"
+            label="Tolerância (minutos)"
+            type="number"
+            value={tolerancia}
+            onChange={handleToleranciaChange}
+          />
+        </Box>
+        <FormControl sx={{ m: 1, width: "35%" }}>
+          <InputLabel id="demo-multiple-checkbox-label">Recursos</InputLabel>
+          <Select
+            labelId="demo-multiple-checkbox-label"
+            id="demo-multiple-checkbox"
+            multiple
+            value={selectedItems}
+            onChange={handleSelectedItemsChange}
+            input={<OutlinedInput label="Recursos" />}
+            renderValue={(selected) => selected.join(", ")}
           >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+            {recursos.map((recurso) => (
+              <MenuItem key={recurso} value={recurso}>
+                <Checkbox checked={selectedItems.indexOf(recurso) > -1} />
+                <ListItemText primary={recurso} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button variant="contained" onClick={handleSearchSalas} sx={{ mt: 3 }}>
+          Buscar Salas
+        </Button>
       </Box>
+      {showResults && (
+        <Box sx={{ width: "80%", marginTop: "2rem" }}>
+          <h2>Available Rooms</h2>
+          {availableSalas.length > 0 ? (
+            <Grid container spacing={2}>
+              {availableSalas.map((room) => (
+                <Grid item xs={12} md={6} key={room}>
+                  <Tooltip
+                    title={
+                      hoveredRoomResources.length > 0
+                        ? hoveredRoomResources.join(", ")
+                        : "Loading resources..."
+                    }
+                  >
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      onMouseEnter={() => handleRoomMouseEnter(room)}
+                      onMouseLeave={handleRoomMouseLeave}
+                      onClick={() => handleReserveRoom(room)}
+                    >
+                      {room}
+                    </Button>
+                  </Tooltip>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <p>No rooms available.</p>
+          )}
+        </Box>
+      )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
