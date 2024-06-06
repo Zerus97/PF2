@@ -18,10 +18,8 @@ const insertEvento = async (req: Request, res: Response) => {
     return badRequest(res, "ID do responsável inválido");
 
   try {
-    // Insert event
     const id = await eventoModel.insertEvento(evento);
 
-    // Insert reservation status
     const currentTime = new Date().toLocaleTimeString("pt-BR", {
       hour: "2-digit",
       minute: "2-digit",

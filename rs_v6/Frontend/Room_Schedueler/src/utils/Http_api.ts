@@ -124,6 +124,18 @@ async function getNome(matricula: string) {
   }
 }
 
+async function getEventosByResponsavel(matricula: string) {
+  try {
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/evento/responsavel_evento" + matricula
+    );
+    return response.data.eventos;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -132,6 +144,7 @@ const Http_api = {
   searchSalas,
   insertEvento,
   getNome,
+  getEventosByResponsavel,
 };
 
 export default Http_api;

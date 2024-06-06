@@ -24,7 +24,7 @@ import Http_api from "../utils/Http_api";
 import { useNavigate } from "react-router-dom";
 
 interface ReserveScreenProps {
-  user?: string; // Add user prop
+  user?: string;
 }
 
 export default function ReserveScreen({ user }: ReserveScreenProps) {
@@ -42,7 +42,7 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
   const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
     []
   );
-  const [isResourcesLoaded, setIsResourcesLoaded] = useState<boolean>(false); // New state variable
+  const [isResourcesLoaded, setIsResourcesLoaded] = useState<boolean>(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
