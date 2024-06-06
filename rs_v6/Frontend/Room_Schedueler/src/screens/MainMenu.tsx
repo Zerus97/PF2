@@ -84,7 +84,7 @@ function MainMenu({ user }: Props) {
         <Button
           variant="contained"
           sx={{ width: "fit-content" }}
-          onClick={() => console.log("Clicked")}
+          onClick={() => navigate("/my_eventos")}
         >
           Minhas Reservas
         </Button>

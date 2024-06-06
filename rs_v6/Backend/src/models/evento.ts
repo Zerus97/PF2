@@ -2,6 +2,7 @@ import { dbQuery } from "../services/db";
 
 export type Evento = {
   evento_id?: number;
+  event_name: string;
   data: string;
   tmini: string;
   tmfim: string;
@@ -13,8 +14,8 @@ export type Evento = {
 
 const insertEvento = async (evento: Evento) => {
   await dbQuery(
-    `INSERT INTO Eventos (data, tmini, tmfim, num_participantes, tol, sala_id, responsavel_id) 
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO Eventos (data, tmini, tmfim, num_participantes, tol, sala_id, responsavel_id, event_name) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       evento.data,
       evento.tmini,
@@ -23,6 +24,7 @@ const insertEvento = async (evento: Evento) => {
       evento.tol,
       evento.sala_id,
       evento.responsavel_id,
+      evento.event_name,
     ]
   );
   const result = await dbQuery("SELECT MAX(event_id) id FROM Eventos");
@@ -50,7 +52,7 @@ const getAvailableSalas = async (
 
 const getEventosByResponsavel = async (responsavel_id: number) => {
   const result = await dbQuery(
-    `SELECT * FROM Eventos WHERE responsavel_id = ?`,
+    `SELECT event_id, event_name, data, tmini, tmfim, num_participantes, tol, sala_id FROM Eventos WHERE responsavel_id = ?`,
     [responsavel_id]
   );
   return result;

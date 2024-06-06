@@ -87,6 +87,7 @@ async function insertEvento(
   tmfim: string,
   sala_id: string,
   responsavel_id: string,
+  event_name: string,
   num_participantes?: string,
   tol?: string,
   predio?: string
@@ -100,6 +101,7 @@ async function insertEvento(
         tmfim,
         sala_id,
         responsavel_id,
+        event_name,
         num_participantes,
         tol,
         predio,
@@ -124,6 +126,18 @@ async function getNome(matricula: string) {
   }
 }
 
+async function getEventosByResponsavel(matricula: string) {
+  try {
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/evento/responsavel_eventos/" + matricula
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -132,6 +146,7 @@ const Http_api = {
   searchSalas,
   insertEvento,
   getNome,
+  getEventosByResponsavel,
 };
 
 export default Http_api;

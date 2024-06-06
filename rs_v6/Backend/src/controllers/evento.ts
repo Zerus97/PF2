@@ -16,12 +16,11 @@ const insertEvento = async (req: Request, res: Response) => {
   if (!evento.sala_id) return badRequest(res, "ID da sala inválido");
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
+  if (!evento.event_name) return badRequest(res, "event_name vazio");
 
   try {
-    // Insert event
     const id = await eventoModel.insertEvento(evento);
 
-    // Insert reservation status
     const currentTime = new Date().toLocaleTimeString("pt-BR", {
       hour: "2-digit",
       minute: "2-digit",
@@ -65,8 +64,8 @@ const getEventosByResponsavel = (req: Request, res: Response) => {
 
   eventoModel
     .getEventosByResponsavel(Number(responsavel_id))
-    .then((eventos) => {
-      res.json(eventos);
+    .then((evento) => {
+      res.json(evento);
     })
     .catch((err) => internalServerError(res, err));
 };

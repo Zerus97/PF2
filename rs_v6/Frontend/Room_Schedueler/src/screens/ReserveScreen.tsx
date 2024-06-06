@@ -24,7 +24,7 @@ import Http_api from "../utils/Http_api";
 import { useNavigate } from "react-router-dom";
 
 interface ReserveScreenProps {
-  user?: string; // Add user prop
+  user?: string;
 }
 
 export default function ReserveScreen({ user }: ReserveScreenProps) {
@@ -42,12 +42,13 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
   const [hoveredRoomResources, setHoveredRoomResources] = useState<string[]>(
     []
   );
-  const [isResourcesLoaded, setIsResourcesLoaded] = useState<boolean>(false); // New state variable
+  const [isResourcesLoaded, setIsResourcesLoaded] = useState<boolean>(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+  const [eventName, setEventName] = useState<string>(""); // New state for event name
 
   const navigate = useNavigate();
 
@@ -105,6 +106,12 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
     setSelectedItems(typeof value === "string" ? value.split(",") : value);
   };
 
+  const handleEventNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setEventName(event.target.value);
+  };
+
   const handleSearchSalas = async () => {
     try {
       const searchParams = {
@@ -151,6 +158,7 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
         hr_fim ? hr_fim.format("HH:mm") : "",
         roomId,
         user || "", // Use user matricula here
+        eventName, // Pass event name
         numParticipantes.toString(),
         tolerancia.toString()
       );
@@ -252,6 +260,12 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
             type="number"
             value={tolerancia}
             onChange={handleToleranciaChange}
+          />
+          <TextField
+            id="event-name"
+            label="Nome do Evento" // Label for event name
+            value={eventName}
+            onChange={handleEventNameChange}
           />
         </Box>
         <FormControl sx={{ m: 1, width: "35%" }}>
