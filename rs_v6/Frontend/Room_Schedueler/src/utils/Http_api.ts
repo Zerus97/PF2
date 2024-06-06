@@ -87,6 +87,7 @@ async function insertEvento(
   tmfim: string,
   sala_id: string,
   responsavel_id: string,
+  event_name: string,
   num_participantes?: string,
   tol?: string,
   predio?: string
@@ -100,6 +101,7 @@ async function insertEvento(
         tmfim,
         sala_id,
         responsavel_id,
+        event_name,
         num_participantes,
         tol,
         predio,

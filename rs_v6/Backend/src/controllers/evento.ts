@@ -16,6 +16,7 @@ const insertEvento = async (req: Request, res: Response) => {
   if (!evento.sala_id) return badRequest(res, "ID da sala inválido");
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
+  if (!evento.event_name) return badRequest(res, "event_name vazio");
 
   try {
     const id = await eventoModel.insertEvento(evento);
@@ -63,8 +64,8 @@ const getEventosByResponsavel = (req: Request, res: Response) => {
 
   eventoModel
     .getEventosByResponsavel(Number(responsavel_id))
-    .then((event_id) => {
-      res.json(event_id);
+    .then((evento) => {
+      res.json(evento);
     })
     .catch((err) => internalServerError(res, err));
 };

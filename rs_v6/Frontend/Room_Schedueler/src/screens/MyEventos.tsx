@@ -8,6 +8,7 @@ interface MyEventosProps {
 
 interface Evento {
   event_id: string;
+  event_name: string;
 }
 
 function MyEventos({ user }: MyEventosProps) {
@@ -47,7 +48,7 @@ function MyEventos({ user }: MyEventosProps) {
             variant="outlined"
             sx={{ m: 1, width: "80%" }}
           >
-            {evento.event_id}
+            {evento.event_name}
           </Button>
         ))
       ) : (
