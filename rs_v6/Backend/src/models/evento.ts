@@ -50,7 +50,7 @@ const getAvailableSalas = async (
 
 const getEventosByResponsavel = async (responsavel_id: number) => {
   const result = await dbQuery(
-    `SELECT * FROM Eventos WHERE responsavel_id = ?`,
+    `SELECT event_id FROM Eventos WHERE responsavel_id = ?`,
     [responsavel_id]
   );
   return result;

@@ -63,8 +63,8 @@ const getEventosByResponsavel = (req: Request, res: Response) => {
 
   eventoModel
     .getEventosByResponsavel(Number(responsavel_id))
-    .then((eventos) => {
-      res.json(eventos);
+    .then((event_id) => {
+      res.json(event_id);
     })
     .catch((err) => internalServerError(res, err));
 };

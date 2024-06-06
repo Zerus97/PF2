@@ -127,9 +127,9 @@ async function getNome(matricula: string) {
 async function getEventosByResponsavel(matricula: string) {
   try {
     const response = await axios.get(
-      "http://localhost:8091/api/v1/evento/responsavel_evento" + matricula
+      "http://localhost:8091/api/v1/evento/responsavel_eventos/" + matricula
     );
-    return response.data.eventos;
+    return response.data;
   } catch (error) {
     console.log(error);
     throw error;
