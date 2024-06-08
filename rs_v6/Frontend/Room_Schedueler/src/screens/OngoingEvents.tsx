@@ -20,7 +20,7 @@ interface Event {
   tmini: string;
   tmfim: string;
   sala_id: string;
-  // Add other event fields as necessary
+  tol: string;
 }
 
 const OngoingEvents: React.FC<OngoingEventsProps> = ({ userMatricula }) => {
@@ -103,7 +103,7 @@ const OngoingEvents: React.FC<OngoingEventsProps> = ({ userMatricula }) => {
             >
               <ListItemText
                 primary={event.event_name}
-                secondary={`Date: ${event.data} | Time: ${event.tmini} - ${event.tmfim} | Room: ${event.sala_id}`}
+                secondary={`Date: ${event.data} | Time: ${event.tmini} - ${event.tmfim} | Room: ${event.sala_id} | Tolerância de atraso: ${event.tol}`}
               />
               {selectedEventId === event.event_id && (
                 <Box
