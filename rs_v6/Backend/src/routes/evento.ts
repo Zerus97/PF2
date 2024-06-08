@@ -15,5 +15,9 @@ eventoRouter.get(
 );
 eventoRouter.post("/convite", eventoController.insertConvite);
 eventoRouter.put("/respond_convite", eventoController.respondConvite);
+eventoRouter.get(
+  "/ongoing_event/:matricula",
+  eventoController.getOngoingEventsByMatricula
+);
 
 export { eventoRouter };

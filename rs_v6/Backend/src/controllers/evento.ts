@@ -17,6 +17,7 @@ const insertEvento = async (req: Request, res: Response) => {
   if (!evento.responsavel_id)
     return badRequest(res, "ID do responsável inválido");
   if (!evento.event_name) return badRequest(res, "event_name vazio");
+  if (evento.tmfim < evento.tmini) return badRequest(res, "horário inválido");
 
   try {
     const id = await eventoModel.insertEvento(evento);
@@ -29,7 +30,7 @@ const insertEvento = async (req: Request, res: Response) => {
     const reserva = {
       matricula: evento.responsavel_id,
       event_id: id,
-      status: "ativa",
+      status: "Ativa",
       data: evento.data,
       time: currentTime,
     } as Reserva;
@@ -105,6 +106,19 @@ const respondConvite = async (req: Request, res: Response) => {
   }
 };
 
+const getOngoingEventsByMatricula = (req: Request, res: Response) => {
+  const { matricula } = req.params;
+
+  if (!matricula) return badRequest(res, "ID do responsável inválido");
+
+  eventoModel
+    .getOngoingEventsByMatricula(Number(matricula))
+    .then((evento) => {
+      res.json(evento);
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
 export const eventoController = {
   insertEvento,
   getAvailableSalas,
@@ -112,4 +126,5 @@ export const eventoController = {
   getEventosByParticipante,
   insertConvite,
   respondConvite,
+  getOngoingEventsByMatricula,
 };
