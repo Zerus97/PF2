@@ -4,6 +4,7 @@ import MainMenu from "./screens/MainMenu";
 import { useState } from "react";
 import ReserveScreen from "./screens/ReserveScreen";
 import MyEventos from "./screens/MyEventos"; // Import MyEventos component
+import OngoingEvents from "./screens/OngoingEvents";
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -19,7 +20,10 @@ function App() {
         <Route path="/main_menu" element={<MainMenu user={user} />} />
         <Route path="/reserving" element={<ReserveScreen user={user} />} />
         <Route path="/my_eventos" element={<MyEventos user={user} />} />{" "}
-        {/* Add this line */}
+        <Route
+          path="/eventos_andamento"
+          element={<OngoingEvents userMatricula={user} />}
+        />{" "}
       </Routes>
     </Router>
   );

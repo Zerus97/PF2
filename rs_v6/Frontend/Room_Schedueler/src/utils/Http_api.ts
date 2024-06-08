@@ -184,6 +184,41 @@ async function respondConvite(
   }
 }
 
+async function getOngoingEventsByMatricula(matricula: string) {
+  try {
+    const response = await axios.get(
+      "http://localhost:8091/api/v1/evento/ongoing_event/" + matricula
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+async function insertPresenca(
+  matricula: string,
+  event_id: string,
+  time: string,
+  type: string
+) {
+  try {
+    const response = await axios.post(
+      "http://localhost:8091/api/v1/presenca/post_presenca",
+      {
+        matricula,
+        event_id,
+        time,
+        type,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -196,6 +231,8 @@ const Http_api = {
   getEventosByParticipante,
   respondConvite,
   insertConvite,
+  getOngoingEventsByMatricula,
+  insertPresenca,
 };
 
 export default Http_api;

@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Http_api from "../utils/Http_api";
 
@@ -8,17 +8,16 @@ interface Props {
   user?: string;
 }
 
-function MainMenu({ user }: Props) {
-  const [nome, setNome] = useState<string>(""); // State to store Nome
+const MainMenu: React.FC<Props> = ({ user }) => {
+  const [nome, setNome] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNome = async () => {
       try {
-        // Call getNome function from Http_api
-        const response = await Http_api.getNome(user || ""); // Pass the user's matricula
+        const response = await Http_api.getNome(user || "");
         if (response && response.length > 0) {
-          setNome(response); // Assuming the response is an array with a single Nome
+          setNome(response);
         }
       } catch (error) {
         console.error("Error fetching Nome:", error);
@@ -84,13 +83,13 @@ function MainMenu({ user }: Props) {
         <Button
           variant="contained"
           sx={{ width: "fit-content" }}
-          onClick={() => console.log("Clicked")}
+          onClick={() => navigate("/eventos_andamento")}
         >
           Eventos em Andamento
         </Button>
       </Box>
     </>
   );
-}
+};
 
 export default MainMenu;
