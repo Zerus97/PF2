@@ -150,15 +150,32 @@ async function getEventosByParticipante(matricula: string) {
   }
 }
 
+async function insertConvite(evento_id: string, participante_id: string) {
+  try {
+    const response = await axios.post(
+      "http://localhost:8091/api/v1/evento/convite",
+      {
+        evento_id,
+        participante_id,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 async function respondConvite(
-  event_id: string,
-  matricula: string,
+  evento_id: string,
+  participante_id: string,
   status: string
 ) {
+  console.log(evento_id, participante_id, status);
   try {
     const response = await axios.put(
       "http://localhost:8091/api/v1/evento/respond_convite/",
-      { event_id, matricula, status }
+      { evento_id, participante_id, status }
     );
     return response.data;
   } catch (error) {
@@ -178,6 +195,7 @@ const Http_api = {
   getEventosByResponsavel,
   getEventosByParticipante,
   respondConvite,
+  insertConvite,
 };
 
 export default Http_api;

@@ -225,6 +225,7 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
                   label="Hora de Início"
                   value={hr_ini}
                   onChange={handleHriniChange}
+                  ampm={false} // Display time in 24-hour format
                 />
               </LocalizationProvider>
             </Grid>
@@ -234,6 +235,7 @@ export default function ReserveScreen({ user }: ReserveScreenProps) {
                   label="Hora de Fim"
                   value={hr_fim}
                   onChange={handleHrfimChange}
+                  ampm={false} // Display time in 24-hour format
                 />
               </LocalizationProvider>
             </Grid>
