@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { badRequest, internalServerError } from "../services/utils";
-import { Evento, eventoModel } from "../models/evento";
+import { Convite, Evento, eventoModel } from "../models/evento";
 import { Reserva, reservaModel } from "../models/reserva";
 
 const insertEvento = async (req: Request, res: Response) => {
@@ -70,8 +70,35 @@ const getEventosByResponsavel = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const getEventosByParticipante = (req: Request, res: Response) => {
+  const { participante_id } = req.params;
+
+  if (!participante_id) return badRequest(res, "ID do participante inválido");
+
+  eventoModel
+    .getEventosByParticipante(Number(participante_id))
+    .then((evento) => {
+      res.json(evento);
+    })
+    .catch((err) => internalServerError(res, err));
+};
+
+const insertConvite = async (req: Request, res: Response) => {
+  const convite = req.body as Convite;
+  //console.log(evento);
+  try {
+    const id = await eventoModel.insertConvite(convite);
+
+    res.json({ id });
+  } catch (err) {
+    internalServerError(res, err as Error);
+  }
+};
+
 export const eventoController = {
   insertEvento,
   getAvailableSalas,
   getEventosByResponsavel,
+  getEventosByParticipante,
+  insertConvite,
 };
