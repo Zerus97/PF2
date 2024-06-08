@@ -77,16 +77,16 @@ function MainMenu({ user }: Props) {
         <Button
           variant="contained"
           sx={{ width: "fit-content", mb: 1 }}
-          onClick={() => console.log("Clicked")}
+          onClick={() => navigate("/my_eventos")}
         >
-          Calendário
+          Minhas Reservas
         </Button>
         <Button
           variant="contained"
           sx={{ width: "fit-content" }}
-          onClick={() => navigate("/my_eventos")}
+          onClick={() => console.log("Clicked")}
         >
-          Minhas Reservas
+          Eventos em Andamento
         </Button>
       </Box>
     </>
