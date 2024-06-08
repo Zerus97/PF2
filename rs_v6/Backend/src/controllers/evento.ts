@@ -85,9 +85,19 @@ const getEventosByParticipante = (req: Request, res: Response) => {
 
 const insertConvite = async (req: Request, res: Response) => {
   const convite = req.body as Convite;
-  //console.log(evento);
   try {
     const id = await eventoModel.insertConvite(convite);
+
+    res.json({ id });
+  } catch (err) {
+    internalServerError(res, err as Error);
+  }
+};
+
+const respondConvite = async (req: Request, res: Response) => {
+  const convite = req.body as Convite;
+  try {
+    const id = await eventoModel.respondConvite(convite);
 
     res.json({ id });
   } catch (err) {
@@ -101,4 +111,5 @@ export const eventoController = {
   getEventosByResponsavel,
   getEventosByParticipante,
   insertConvite,
+  respondConvite,
 };

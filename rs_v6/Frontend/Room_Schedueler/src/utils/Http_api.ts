@@ -150,6 +150,23 @@ async function getEventosByParticipante(matricula: string) {
   }
 }
 
+async function respondConvite(
+  event_id: string,
+  matricula: string,
+  status: string
+) {
+  try {
+    const response = await axios.put(
+      "http://localhost:8091/api/v1/evento/respond_convite/",
+      { event_id, matricula, status }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const Http_api = {
   login,
   getPredios,
@@ -160,6 +177,7 @@ const Http_api = {
   getNome,
   getEventosByResponsavel,
   getEventosByParticipante,
+  respondConvite,
 };
 
 export default Http_api;

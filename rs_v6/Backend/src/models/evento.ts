@@ -15,6 +15,7 @@ export type Evento = {
 export type Convite = {
   evento_id: number;
   participante_id: number;
+  status?: string;
 };
 
 const insertEvento = async (evento: Evento) => {
@@ -92,10 +93,23 @@ const insertConvite = async (convite: Convite) => {
   return result[0].id;
 };
 
+const respondConvite = async (convite: Convite) => {
+  await dbQuery(
+    `UPDATE Convites SET status = ? WHERE event_id = ? AND convidado_matricula = ?`,
+    [convite.status, convite.evento_id, convite.participante_id]
+  );
+  const result = await dbQuery(
+    "SELECT 1 id FROM Convites WHERE event_id = ? AND convidado_matricula = ?",
+    [convite.evento_id, convite.participante_id]
+  );
+  return result[0].id;
+};
+
 export const eventoModel = {
   insertEvento,
   getAvailableSalas,
   getEventosByResponsavel,
   getEventosByParticipante,
   insertConvite,
+  respondConvite,
 };
