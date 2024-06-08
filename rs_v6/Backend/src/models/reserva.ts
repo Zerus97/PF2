@@ -23,6 +23,44 @@ const insertReserveStatus = async (reserva: Reserva) => {
   return (result[0].status as number) || undefined;
 };
 
+const checkReservaTime = async (currentTime: string, type: string) => {
+  let result = [];
+  if (type == "tmini") {
+    result = await dbQuery(
+      `SELECT
+Eventos.event_id
+FROM Reservas
+LEFT JOIN Eventos ON
+Reservas.event_id = Eventos.event_id AND tmini = strftime("%H:%M", ?)
+WHERE status = "Ativa"`,
+      [currentTime]
+    );
+  } else {
+    result = await dbQuery(
+      `SELECT
+Eventos.event_id
+FROM Reservas
+LEFT JOIN Eventos ON
+Reservas.event_id = Eventos.event_id AND tmfim = strftime("%H:%M", ?)
+WHERE status = "Em andamento"`,
+      [currentTime]
+    );
+  }
+  return result.map((row: any) => row.event_id) as string[];
+};
+
+const changeReservaStatus = async (event_id: string[], status: string) => {
+  for (let i = 0; i < event_id.length; i++) {
+    await dbQuery(`UPDATE Reservas SET status = ? WHERE event_id = ?`, [
+      status,
+      event_id[i],
+    ]);
+  }
+  return 1;
+};
+
 export const reservaModel = {
   insertReserveStatus,
+  checkReservaTime,
+  changeReservaStatus,
 };

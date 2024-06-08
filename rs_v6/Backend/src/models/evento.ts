@@ -98,11 +98,46 @@ const respondConvite = async (convite: Convite) => {
     `UPDATE Convites SET status = ? WHERE event_id = ? AND convidado_matricula = ?`,
     [convite.status, convite.evento_id, convite.participante_id]
   );
+  if (convite.status == "Recusar") {
+    await dbQuery(
+      `DELETE FROM Convites WHERE event_id = ? AND convidado_matricula = ?`,
+      [convite.evento_id, convite.participante_id]
+    );
+    return 1;
+  } else {
+    const result = await dbQuery(
+      "SELECT 1 id FROM Convites WHERE event_id = ? AND convidado_matricula = ?",
+      [convite.evento_id, convite.participante_id]
+    );
+    return result[0].id;
+  }
+};
+
+const getOngoingEventsByMatricula = async (matricula: number) => {
   const result = await dbQuery(
-    "SELECT 1 id FROM Convites WHERE event_id = ? AND convidado_matricula = ?",
-    [convite.evento_id, convite.participante_id]
+    `SELECT 
+Eventos.event_id, 
+event_name, 
+Eventos.data, tmini, tmfim, 
+num_participantes, tol, sala_id 
+FROM Reservas, Eventos
+WHERE Reservas.event_id = Eventos.event_id AND Eventos.responsavel_id = ?
+AND Reservas.status = "Em andamento"
+
+UNION ALL
+
+SELECT
+Eventos.event_id, 
+event_name, 
+Eventos.data, tmini, tmfim, 
+num_participantes, tol, sala_id 
+FROM Convites, Eventos, Reservas
+WHERE Convites.event_id = Eventos.event_id AND Reservas.event_id = Eventos.event_id AND Convites.convidado_matricula = ?
+AND Convites.status = "Aceitar" AND Reservas.status = "Em andamento"
+`,
+    [matricula, matricula]
   );
-  return result[0].id;
+  return result;
 };
 
 export const eventoModel = {
@@ -112,4 +147,5 @@ export const eventoModel = {
   getEventosByParticipante,
   insertConvite,
   respondConvite,
+  getOngoingEventsByMatricula,
 };

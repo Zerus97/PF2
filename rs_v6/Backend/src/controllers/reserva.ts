@@ -19,6 +19,24 @@ const insertReserva = (req: Request, res: Response) => {
     .catch((err) => internalServerError(res, err));
 };
 
+const checkReservaTime = async () => {
+  const currentTime = new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const event_ids = await reservaModel.checkReservaTime(currentTime, "tmini");
+
+  await reservaModel.changeReservaStatus(event_ids, "Em andamento");
+
+  const event_ids2 = await reservaModel.checkReservaTime(currentTime, "tmfim");
+
+  await reservaModel.changeReservaStatus(event_ids2, "Finalizada");
+  return 1;
+};
+
+setInterval(checkReservaTime, 5000);
+
 export const reservaController = {
   insertReserva,
 };
