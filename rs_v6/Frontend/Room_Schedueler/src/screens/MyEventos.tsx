@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Http_api from "../utils/Http_api";
 
 interface MyEventosProps {
@@ -15,12 +24,14 @@ interface Evento {
   num_participantes: string;
   tol: string;
   sala_id: string;
+  status?: string; // Adding status to Evento interface
 }
 
 function MyEventos({ user }: MyEventosProps) {
   const [responsavelEventos, setResponsavelEventos] = useState<Evento[]>([]);
   const [participanteEventos, setParticipanteEventos] = useState<Evento[]>([]);
-  const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
+  const [expanded, setExpanded] = useState<string | false>(false);
+  const [inviteMatricula, setInviteMatricula] = useState<string>("");
 
   useEffect(() => {
     const fetchEventos = async () => {
@@ -42,8 +53,34 @@ function MyEventos({ user }: MyEventosProps) {
     }
   }, [user]);
 
+  const handleResponse = async (evento: Evento, status: string) => {
+    try {
+      await Http_api.respondConvite(evento.event_id, user, status);
+      // Update the status locally to reflect the change immediately
+      setResponsavelEventos((prev) =>
+        prev.map((e) => (e.event_id === evento.event_id ? { ...e, status } : e))
+      );
+      setParticipanteEventos((prev) =>
+        prev.map((e) => (e.event_id === evento.event_id ? { ...e, status } : e))
+      );
+    } catch (error) {
+      console.error("Error responding to convite:", error);
+    }
+  };
+
+  const handleInvite = async (evento_id: string) => {
+    try {
+      await Http_api.insertConvite(evento_id, inviteMatricula);
+      setInviteMatricula(""); // Clear the text field after sending the invitation
+      alert("Convite enviado com sucesso!");
+    } catch (error) {
+      console.error("Error sending convite:", error);
+      alert("Erro ao enviar convite.");
+    }
+  };
+
   const renderEventoDetails = (evento: Evento) => (
-    <Box sx={{ width: "80%", mt: 4 }}>
+    <Box sx={{ mt: 2 }}>
       <TextField
         label="Nome do Evento"
         value={evento.event_name}
@@ -107,8 +144,64 @@ function MyEventos({ user }: MyEventosProps) {
           readOnly: true,
         }}
       />
+      {evento.status && (
+        <TextField
+          label="Status"
+          value={evento.status}
+          fullWidth
+          margin="normal"
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      )}
+      {participanteEventos.includes(evento) && (
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleResponse(evento, "Aceitar")}
+          >
+            Aceitar
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleResponse(evento, "Recusar")}
+          >
+            Recusar
+          </Button>
+        </Box>
+      )}
+      {responsavelEventos.includes(evento) && (
+        <Box sx={{ mt: 2 }}>
+          {expanded === evento.event_id && (
+            <Box sx={{ mt: 2 }}>
+              <TextField
+                label="Matricula do Participante"
+                value={inviteMatricula}
+                onChange={(e) => setInviteMatricula(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleInvite(evento.event_id)}
+              >
+                Enviar Convite
+              </Button>
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
+
+  const handleAccordionChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   return (
     <Box
@@ -124,22 +217,25 @@ function MyEventos({ user }: MyEventosProps) {
       </Typography>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
           width: "100%",
         }}
       >
         {responsavelEventos.length > 0 ? (
           responsavelEventos.map((evento) => (
-            <Button
+            <Accordion
               key={evento.event_id}
-              variant="outlined"
-              sx={{ m: 1, width: "80%" }}
-              onClick={() => setSelectedEvento(evento)}
+              expanded={expanded === evento.event_id}
+              onChange={handleAccordionChange(evento.event_id)}
             >
-              {evento.event_name}
-            </Button>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`${evento.event_id}-content`}
+                id={`${evento.event_id}-header`}
+              >
+                <Typography>{evento.event_name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>{renderEventoDetails(evento)}</AccordionDetails>
+            </Accordion>
           ))
         ) : (
           <Typography>Nenhuma reserva encontrada.</Typography>
@@ -150,20 +246,24 @@ function MyEventos({ user }: MyEventosProps) {
         </Typography>
         {participanteEventos.length > 0 ? (
           participanteEventos.map((evento) => (
-            <Button
+            <Accordion
               key={evento.event_id}
-              variant="contained"
-              sx={{ m: 1, width: "80%", backgroundColor: "green" }}
-              onClick={() => setSelectedEvento(evento)}
+              expanded={expanded === evento.event_id}
+              onChange={handleAccordionChange(evento.event_id)}
             >
-              {evento.event_name}
-            </Button>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`${evento.event_id}-content`}
+                id={`${evento.event_id}-header`}
+              >
+                <Typography>{evento.event_name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>{renderEventoDetails(evento)}</AccordionDetails>
+            </Accordion>
           ))
         ) : (
           <Typography>Nenhum evento encontrado.</Typography>
         )}
-
-        {selectedEvento && renderEventoDetails(selectedEvento)}
       </Box>
     </Box>
   );
