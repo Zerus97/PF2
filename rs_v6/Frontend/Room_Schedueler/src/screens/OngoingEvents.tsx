@@ -76,7 +76,7 @@ const OngoingEvents: React.FC<OngoingEventsProps> = ({ userMatricula }) => {
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return <Typography>Carregando...</Typography>;
   }
 
   if (error) {
@@ -86,7 +86,7 @@ const OngoingEvents: React.FC<OngoingEventsProps> = ({ userMatricula }) => {
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Ongoing Events
+        Eventos em andamento
       </Typography>
       {events.length > 0 ? (
         <List>
@@ -128,7 +128,7 @@ const OngoingEvents: React.FC<OngoingEventsProps> = ({ userMatricula }) => {
           ))}
         </List>
       ) : (
-        <Typography>No ongoing events found.</Typography>
+        <Typography>Nenhum evento em andamento.</Typography>
       )}
     </Box>
   );
