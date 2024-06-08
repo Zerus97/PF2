@@ -9,5 +9,11 @@ eventoRouter.get(
   "/responsavel_eventos/:responsavel_id",
   eventoController.getEventosByResponsavel
 );
+eventoRouter.get(
+  "/participante_eventos/:participante_id",
+  eventoController.getEventosByParticipante
+);
+eventoRouter.post("/convite", eventoController.insertConvite);
+eventoRouter.put("/respond_convite", eventoController.respondConvite);
 
 export { eventoRouter };

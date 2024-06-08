@@ -18,14 +18,20 @@ interface Evento {
 }
 
 function MyEventos({ user }: MyEventosProps) {
-  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [responsavelEventos, setResponsavelEventos] = useState<Evento[]>([]);
+  const [participanteEventos, setParticipanteEventos] = useState<Evento[]>([]);
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
 
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const response = await Http_api.getEventosByResponsavel(user);
-        setEventos(response);
+        const [responsavelResponse, participanteResponse] = await Promise.all([
+          Http_api.getEventosByResponsavel(user),
+          Http_api.getEventosByParticipante(user),
+        ]);
+
+        setResponsavelEventos(responsavelResponse);
+        setParticipanteEventos(participanteResponse);
       } catch (error) {
         console.error("Error fetching eventos:", error);
       }
@@ -35,6 +41,74 @@ function MyEventos({ user }: MyEventosProps) {
       fetchEventos();
     }
   }, [user]);
+
+  const renderEventoDetails = (evento: Evento) => (
+    <Box sx={{ width: "80%", mt: 4 }}>
+      <TextField
+        label="Nome do Evento"
+        value={evento.event_name}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Data"
+        value={evento.data}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Hora de Início"
+        value={evento.tmini}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Hora de Fim"
+        value={evento.tmfim}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Número de Participantes"
+        value={evento.num_participantes}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Tolerância"
+        value={evento.tol}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Sala"
+        value={evento.sala_id}
+        fullWidth
+        margin="normal"
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+    </Box>
+  );
 
   return (
     <Box
@@ -56,8 +130,8 @@ function MyEventos({ user }: MyEventosProps) {
           width: "100%",
         }}
       >
-        {eventos.length > 0 ? (
-          eventos.map((evento) => (
+        {responsavelEventos.length > 0 ? (
+          responsavelEventos.map((evento) => (
             <Button
               key={evento.event_id}
               variant="outlined"
@@ -71,76 +145,25 @@ function MyEventos({ user }: MyEventosProps) {
           <Typography>Nenhuma reserva encontrada.</Typography>
         )}
 
-        {selectedEvento && (
-          <Box sx={{ width: "80%", mt: 4 }}>
-            <TextField
-              label="Nome do Evento"
-              value={selectedEvento.event_name}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Data"
-              value={selectedEvento.data}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Hora de Início"
-              value={selectedEvento.tmini}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Hora de Fim"
-              value={selectedEvento.tmfim}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Número de Participantes"
-              value={selectedEvento.num_participantes}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Tolerância"
-              value={selectedEvento.tol}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <TextField
-              label="Sala"
-              value={selectedEvento.sala_id}
-              fullWidth
-              margin="normal"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <Button variant="contained" sx={{ mt: 2 }}>
-              Editar
+        <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>
+          Eventos como Participante
+        </Typography>
+        {participanteEventos.length > 0 ? (
+          participanteEventos.map((evento) => (
+            <Button
+              key={evento.event_id}
+              variant="contained"
+              sx={{ m: 1, width: "80%", backgroundColor: "green" }}
+              onClick={() => setSelectedEvento(evento)}
+            >
+              {evento.event_name}
             </Button>
-          </Box>
+          ))
+        ) : (
+          <Typography>Nenhum evento encontrado.</Typography>
         )}
+
+        {selectedEvento && renderEventoDetails(selectedEvento)}
       </Box>
     </Box>
   );
